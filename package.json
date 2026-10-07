@@ -1,0 +1,12 @@
+{
+  "name": "dorfit-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DOR FIT Android shell (Capacitor) with Health Connect",
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capgo/capacitor-health": "^8.0.0"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "appId": "co.il.dorfit",
+  "appName": "DOR FIT",
+  "webDir": "www",
+  "server": {
+    "url": "https://dorfit-production.up.railway.app",
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "backgroundColor": "#05070d"
+}
