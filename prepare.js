@@ -1,6 +1,7 @@
 // Runs after `npx cap add android`: patches the generated Android project.
 const fs = require('fs'), path = require('path');
-const A = path.join(__dirname, '..', 'android');
+const R = fs.existsSync(path.join(__dirname, 'dorfit-release.jks')) ? __dirname : path.join(__dirname, '..');
+const A = path.join(R, 'android');
 const ok = (m) => console.log('[prepare] ' + m);
 
 // 1) minSdk 26 (required by Health Connect)
@@ -12,7 +13,7 @@ if (fs.existsSync(vars)) {
 }
 
 // 2) release signing with the committed keystore
-fs.copyFileSync(path.join(__dirname, '..', 'dorfit-release.jks'), path.join(A, 'app', 'dorfit-release.jks'));
+fs.copyFileSync(path.join(R, 'dorfit-release.jks'), path.join(A, 'app', 'dorfit-release.jks'));
 const bg = path.join(A, 'app', 'build.gradle');
 let g = fs.readFileSync(bg, 'utf8');
 if (!g.includes('dorfit-release.jks')) {
@@ -33,10 +34,11 @@ if (!g.includes('dorfit-release.jks')) {
 
 // 3) launcher icons (replace adaptive/vector icons with the DOR FIT PNGs)
 const res = path.join(A, 'app', 'src', 'main', 'res');
-for (const d of fs.readdirSync(path.join(__dirname, '..', 'icons'))) {
+const IC = JSON.parse(fs.readFileSync(path.join(R, 'icons.json'), 'utf8'));
+for (const d of Object.keys(IC)) {
   const dest = path.join(res, d);
   fs.mkdirSync(dest, { recursive: true });
-  for (const f of fs.readdirSync(path.join(__dirname, '..', 'icons', d))) fs.copyFileSync(path.join(__dirname, '..', 'icons', d, f), path.join(dest, f));
+  for (const f of ['ic_launcher.png', 'ic_launcher_foreground.png', 'ic_launcher_round.png']) fs.writeFileSync(path.join(dest, f), Buffer.from(IC[d], 'base64'));
 }
 for (const d of ['mipmap-anydpi-v26', 'drawable-v24']) fs.rmSync(path.join(res, d), { recursive: true, force: true });
 // (the vector foreground lives in drawable-v24 / drawable; the anydpi xml referenced it)
