@@ -10,5 +10,8 @@
   "android": {
     "allowMixedContent": false
   },
-  "backgroundColor": "#05070d"
+  "backgroundColor": "#05070d",
+  "plugins": {
+    "SystemBars": { "style": "DARK" }
+  }
 }

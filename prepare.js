@@ -54,5 +54,7 @@ const st = path.join(res, 'values', 'styles.xml');
 if (fs.existsSync(st)) {
   let s = fs.readFileSync(st, 'utf8');
   s = s.replace(/<item name="android:background">@drawable\/splash<\/item>/, '<item name="android:background">#05070d</item>\n        <item name="windowSplashScreenBackground">#05070d</item>');
-  fs.writeFileSync(st, s); ok('dark splash');
+  // dark window + system bars so no white strip shows around the web view
+  s = s.replace(/(<style name="AppTheme"[^>]*>)/, '$1\n        <item name="android:windowBackground">#05070d</item>\n        <item name="android:statusBarColor">#05070d</item>\n        <item name="android:navigationBarColor">#05070d</item>');
+  fs.writeFileSync(st, s); ok('dark splash + dark system bars');
 }
