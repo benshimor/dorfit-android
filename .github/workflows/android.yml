@@ -21,10 +21,12 @@ jobs:
         run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
       - name: Install dependencies
         run: npm install
+      - name: Prepare web folder
+        run: mkdir -p www && cp index.html privacypolicy.html www/
       - name: Create Android project
         run: npx cap add android
       - name: Patch project (min SDK, signing, icons)
-        run: node scripts/prepare.js
+        run: node prepare.js
       - name: Sync web assets and plugins
         run: npx cap sync android
       - name: Build APK
