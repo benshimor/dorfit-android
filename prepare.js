@@ -58,3 +58,19 @@ if (fs.existsSync(st)) {
   s = s.replace(/(<style name="AppTheme"[^>]*>)/, '$1\n        <item name="android:windowBackground">#05070d</item>\n        <item name="android:statusBarColor">#05070d</item>\n        <item name="android:navigationBarColor">#05070d</item>');
   fs.writeFileSync(st, s); ok('dark splash + dark system bars');
 }
+
+// 7) camera permission (barcode scanner) + unique version per build so updates install over the old app
+const mf = path.join(A, 'app', 'src', 'main', 'AndroidManifest.xml');
+if (fs.existsSync(mf)) {
+  let m = fs.readFileSync(mf, 'utf8');
+  if (!m.includes('android.permission.CAMERA')) {
+    m = m.replace(/<application/, '<uses-permission android:name="android.permission.CAMERA" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <application');
+    fs.writeFileSync(mf, m); ok('camera permission');
+  }
+}
+{
+  const run = Number(process.env.GITHUB_RUN_NUMBER) || 1;
+  let g2 = fs.readFileSync(bg, 'utf8');
+  g2 = g2.replace(/versionCode\s+\d+/, 'versionCode ' + (100 + run)).replace(/versionName\s+"[^"]*"/, 'versionName "1.' + run + '"');
+  fs.writeFileSync(bg, g2); ok('version ' + (100 + run));
+}
